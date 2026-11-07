@@ -32,7 +32,7 @@ class Agenda
     private function validarInicioEnBloque(DateTimeImmutable $inicio): void
     {
         if ((int) $inicio->format('i') % self::BLOQUE_MINUTOS !== 0 || $inicio->format('s.u') !== '00.000000') {
-            throw new InvalidArgumentException('La hora debe estar alineada a bloques de 30 minutos');
+            throw new InvalidArgumentException(sprintf('La hora debe estar alineada a bloques de %d minutos', self::BLOQUE_MINUTOS));
         }
     }
 
