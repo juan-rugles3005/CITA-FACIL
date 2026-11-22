@@ -1,0 +1,20 @@
+{
+  "_origen": "Datos sintéticos generados con IA (Claude) el 2026-11-22 para las pruebas de la semana 7. Personas ficticias; cédulas 1000000xxx y teléfonos 300 000 00xx inventados, sin relación con personas reales.",
+  "medicos": [
+    "Dra. Sofía Muñoz",
+    "Dr. Andrés Cabrera",
+    "Dra. Lucía O'Neill",
+    "Dr. Iván Quiñones",
+    "Dra. María Ángeles Pérez",
+    "Dr. Zúñiga "
+  ],
+  "textos_vacios": [""],
+  "pacientes": [
+    { "cedula": "1000000001", "nombre": "Nicolás Muñoz Peña", "telefono": "3000000001" },
+    { "cedula": "1000000002", "nombre": "Dayana D'Ávila", "telefono": "3000000002" },
+    { "cedula": "1000000003", "nombre": "José Ñáñez", "telefono": "3000000003" },
+    { "cedula": "1000000004", "nombre": "Ángela Cuéllar Ríos", "telefono": "3000000004" },
+    { "cedula": "1000000005", "nombre": "Yuliana Pérez-Gómez", "telefono": "3000000005" },
+    { "cedula": "1000000006", "nombre": "", "telefono": "" }
+  ]
+}
