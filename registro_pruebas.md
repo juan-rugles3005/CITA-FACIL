@@ -103,7 +103,7 @@ Todas son casos de `test_tabla_de_decision_de_registrar_cita`. D3 y D4 son las d
 
 ## 3. Romper el código a propósito
 
-Un cambio a la vez, con la suite completa (54 pruebas) y deshaciendo cada cambio antes del siguiente.
+Un cambio a la vez, con la suite completa (55 pruebas) y deshaciendo cada cambio antes del siguiente.
 
 | Cambio introducido | Archivo y línea | ¿Alguna prueba falló? | Qué hice |
 |---|---|---|---|
@@ -130,7 +130,7 @@ Un cambio a la vez, con la suite completa (54 pruebas) y deshaciendo cada cambio
 | M25: comparar el médico sin distinguir mayúsculas (`strcasecmp`) | Agenda.php:42 | **No** | No agregué un caso: la regla no dice si «dra. torres» es el mismo médico (ambigüedad 2 de R1). Queda pendiente de la cliente. |
 | M26: revisar la ocupación antes de la alineación | Agenda.php:20-24 | **No** | Es un mutante equivalente: una hora no alineada nunca puede estar ocupada, así que el resultado observable es el mismo. No hay caso por agregar. |
 
-Cada cambio se deshizo antes de probar el siguiente y la suite volvió a OK (54 pruebas, 125 aserciones).
+Cada cambio se deshizo antes de probar el siguiente y la suite volvió a OK (55 pruebas, 126 aserciones).
 
 ## 4. Datos de prueba
 

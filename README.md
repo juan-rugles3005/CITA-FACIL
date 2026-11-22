@@ -114,3 +114,11 @@ App\Agenda\Agenda::registrarCita(
 composer install
 ./vendor/bin/phpunit tests/Unit/AgendaRegistrarCitaTest.php
 ```
+
+## Pruebas de la semana 7
+
+Las reglas, las tablas de casos (particiones, límites y tablas de decisión), las pruebas de la IA revisadas, los errores a propósito y los datos sintéticos están en [`registro_pruebas.md`](registro_pruebas.md). Las pruebas están en `tests/Unit/` y los datos en `tests/Fixtures/datos_sinteticos.json`.
+
+```bash
+./vendor/bin/phpunit tests/Unit
+```
