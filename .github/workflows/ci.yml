@@ -1,0 +1,86 @@
+# Pipeline de integracion continua de CitaFacil.
+# Corre en cada push a main y en cada pull request hacia main.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Permisos minimos: el pipeline solo lee el repositorio.
+permissions:
+  contents: read
+
+# Si llega un push nuevo a la misma rama, cancela la ejecucion anterior.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calidad-y-pruebas:
+    name: Linter, auditoria y pruebas
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PHP 8.2 con cobertura (pcov)
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, sqlite3, pdo_sqlite
+          coverage: pcov
+          tools: composer:v2
+
+      - name: Instalar dependencias (versiones fijadas en composer.lock)
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Preparar entorno de pruebas
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Linter (PHPCS, PHPStan nivel 8 y Pint)
+        run: composer lint
+
+      - name: Auditoria de dependencias (falla si hay vulnerabilidades conocidas)
+        run: composer audit
+
+      # Si una prueba falla, este paso falla y el pipeline sale en rojo.
+      - name: Pruebas con cobertura de la logica de la agenda
+        run: ./vendor/bin/phpunit --coverage-text --coverage-filter app/Agenda
+
+  imagen-docker:
+    name: Construir y probar la imagen Docker
+    runs-on: ubuntu-24.04
+    needs: calidad-y-pruebas
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Construir la imagen
+        run: docker build --tag citafacil:ci .
+
+      - name: Arrancar el contenedor y consultar /up
+        run: |
+          docker run --detach --name citafacil -p 8000:8000 \
+            -e APP_ENV=production -e APP_DEBUG=false \
+            -e APP_KEY="base64:$(openssl rand -base64 32)" \
+            -e SESSION_DRIVER=file -e CACHE_STORE=file \
+            citafacil:ci
+          for i in 1 2 3 4 5 6 7 8 9 10; do
+            if curl --silent --fail http://127.0.0.1:8000/up > /dev/null; then
+              echo "El contenedor responde en /up"
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs citafacil
+          exit 1
+
+      - name: Comprobar que el contenedor no corre como root
+        run: |
+          usuario=$(docker exec citafacil id -un)
+          echo "Usuario dentro del contenedor: $usuario"
+          test "$usuario" != "root"
