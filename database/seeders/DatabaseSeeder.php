@@ -17,6 +17,11 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        // El usuario de prueba usa la contrasena conocida "password" de la fabrica: solo para desarrollo.
+        if (! app()->environment(['local', 'testing'])) {
+            return;
+        }
+
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
