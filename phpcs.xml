@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<ruleset name="CitaFacil">
+    <description>Estilo PSR-12 y reglas de seguridad basicas para CitaFacil</description>
+
+    <file>app</file>
+    <file>routes</file>
+    <file>tests</file>
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <rule ref="PSR12"/>
+
+    <!-- Seguridad: funciones que ejecutan codigo o comandos, o usan hashes rotos -->
+    <rule ref="Generic.PHP.ForbiddenFunctions">
+        <properties>
+            <property name="forbiddenFunctions" type="array">
+                <element key="eval" value="null"/>
+                <element key="exec" value="null"/>
+                <element key="system" value="null"/>
+                <element key="shell_exec" value="null"/>
+                <element key="passthru" value="null"/>
+                <element key="popen" value="null"/>
+                <element key="proc_open" value="null"/>
+                <element key="unserialize" value="null"/>
+                <element key="md5" value="password_hash"/>
+                <element key="sha1" value="password_hash"/>
+                <element key="mysql_query" value="null"/>
+            </property>
+        </properties>
+    </rule>
+    <rule ref="Squiz.PHP.Eval"/>
+    <rule ref="Squiz.PHP.DiscouragedFunctions"/>
+    <rule ref="Generic.PHP.DeprecatedFunctions"/>
+
+    <!-- Las pruebas usan nombres test_algo_en_snake_case (convencion de PHPUnit en este proyecto)
+         y descripciones largas; no se renombran porque no se modifican pruebas para pasar el linter. -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Generic.Files.LineLength">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+    <rule ref="Generic.PHP.NoSilencedErrors"/>
+</ruleset>
