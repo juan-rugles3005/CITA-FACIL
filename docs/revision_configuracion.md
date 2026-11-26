@@ -61,7 +61,7 @@ Conclusión: el pipeline pasa actionlint sin un solo aviso y sin embargo nunca c
 
 ## 5. Verificación
 
-- [ ] El pipeline corregido se ejecutó en GitHub y salió en verde: [PEGAR AQUÍ el enlace a la ejecución]
+- [x] El pipeline se ejecutó en GitHub y salió en verde: [CI #9](https://github.com/juan-rugles3005/CITA-FACIL/actions/runs/45912132087) (commit 78f898c; los trabajos «Linter, auditoría y pruebas» e «imagen-docker» en verde).
 - [x] El pipeline salió en rojo cuando debía: [CI #1](https://github.com/juan-rugles3005/CITA-FACIL/actions/runs/45909817751) (commit df47a11) falló en el paso `composer audit` por 5 avisos de seguridad en `symfony/http-kernel`, `symfony/mailer` y `symfony/routing`, y las pruebas y la imagen Docker no corrieron. No hizo falta romper una prueba a propósito.
-- [ ] La imagen se construye en el pipeline (trabajo «imagen-docker»).
+- [x] La imagen se construye en el pipeline (trabajo «imagen-docker»), el contenedor responde en `/up` y no corre como root.
 - [x] No hay claves en `ci.yml`, en el `Dockerfile` ni en el historial de Git (revisado con `git log -p`).
