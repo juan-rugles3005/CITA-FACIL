@@ -57,7 +57,18 @@ composer lint
 composer audit
 ```
 
-El detalle de las reglas y los casos de prueba está en [`registro_pruebas.md`](registro_pruebas.md), y el informe de la revisión de código y seguridad en [`revision_seguridad.md`](revision_seguridad.md).
+El pipeline de GitHub Actions (`.github/workflows/ci.yml`) corre el linter, `composer audit`, las pruebas con cobertura y la construcción de la imagen Docker en cada push y pull request a `main`.
+
+El detalle de las reglas y los casos de prueba está en [`registro_pruebas.md`](registro_pruebas.md), y el informe de la revisión de código y seguridad en [`revision_seguridad.md`](revision_seguridad.md). Todos los documentos de los módulos están indexados en [`docs/README.md`](docs/README.md).
+
+### Docker
+
+```bash
+docker build -t citafacil .
+docker run -d -p 8000:8000 -e APP_KEY="base64:$(openssl rand -base64 32)" -e SESSION_DRIVER=file -e CACHE_STORE=file citafacil
+```
+
+Abre http://localhost:8000/up para comprobar que responde. La guía completa está en [`docs/guia_despliegue.md`](docs/guia_despliegue.md).
 
 ## 6. Estructura
 
@@ -72,6 +83,9 @@ pint.json            Configuración de Pint
 registro_pruebas.md  Tabla de casos de la semana 7
 revision_seguridad.md  Informe de la revisión de la semana 6
 bitacora_ia.md       Bitácora de uso de la IA
+docs/                Documentos de cada módulo (índice en docs/README.md)
+.github/workflows/   Pipeline de integración continua
+Dockerfile           Imagen del proyecto
 ```
 
 ## 7. Uso de IA
