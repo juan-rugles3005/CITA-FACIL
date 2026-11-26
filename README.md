@@ -1,62 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CitaFácil
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. Qué es
 
-## About Laravel
+CitaFácil es el sistema de gestión de citas de un consultorio médico. Evita que la secretaria asigne la misma hora a dos pacientes con el mismo médico. En esta versión está hecha la lógica de la agenda (HU-06 registrar una cita sin cruces y el cambio de estado de una cita); las citas se guardan en memoria y la persistencia en PostgreSQL llega en una entrega posterior. El proyecto está hecho con Laravel 12.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 2. Requisitos
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.2 o superior con las extensiones `mbstring`, `xml`, `curl` y `sqlite3` (las pruebas de Laravel usan SQLite en memoria)
+- Composer 2
+- Git
+- Node.js 20 o superior y npm: solo si quieres compilar los estilos con Vite (no hacen falta para las pruebas)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 3. Instalación
 
-## Learning Laravel
+```bash
+git clone https://github.com/juan-rugles3005/CITA-FACIL.git
+cd CITA-FACIL
+composer install
+cp .env.example .env
+php artisan key:generate
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+El archivo `.env` es tuyo: no se sube a Git (está en `.gitignore`). Si algún día pones claves o contraseñas de base de datos, van solo ahí y nunca en `.env.example`.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 4. Ejecución
 
-## Laravel Sponsors
+```bash
+php artisan serve
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Abre http://127.0.0.1:8000 para ver la página de inicio. La agenda todavía no tiene pantallas; se puede probar desde la consola:
 
-### Premium Partners
+```bash
+php artisan tinker
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```php
+$agenda = new App\Agenda\Agenda();
+$agenda->registrarCita('1075234567', 'Dra. Torres', new DateTimeImmutable('2026-10-28 09:00'));
+$agenda->estaOcupado('Dra. Torres', new DateTimeImmutable('2026-10-28 09:00')); // true
+```
 
-## Contributing
+## 5. Pruebas
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+./vendor/bin/phpunit
+```
 
-## Code of Conduct
+Revisión de calidad y seguridad (PHP_CodeSniffer con PSR-12 y reglas de seguridad, PHPStan nivel 8 y Pint):
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+composer lint
+composer audit
+```
 
-## Security Vulnerabilities
+El detalle de las reglas y los casos de prueba está en [`registro_pruebas.md`](registro_pruebas.md), y el informe de la revisión de código y seguridad en [`revision_seguridad.md`](revision_seguridad.md).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 6. Estructura
 
-## License
+```
+app/Agenda/          Lógica de la agenda: Agenda, Cita y HorarioOcupadoException
+app/Models/User.php  Modelo de usuario que trae Laravel (todavía sin usar)
+tests/Unit/          Pruebas de la agenda, de los estados de la cita y de entradas maliciosas
+tests/Fixtures/      Datos sintéticos de pacientes y médicos (no son personas reales)
+phpcs.xml            Reglas de PHP_CodeSniffer (estilo y seguridad)
+phpstan.neon         Configuración de PHPStan
+pint.json            Configuración de Pint
+registro_pruebas.md  Tabla de casos de la semana 7
+revision_seguridad.md  Informe de la revisión de la semana 6
+bitacora_ia.md       Bitácora de uso de la IA
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 7. Uso de IA
+
+La IA (Claude, y el chat de VS Code en modo Agent) ayudó a escribir el contrato y las pruebas de la HU-06, la implementación y el refactor, los casos y los datos sintéticos de las pruebas, y la segunda revisión de seguridad de la semana 6. Cada sugerencia se verificó en el código antes de aceptarla, y las que no servían se rechazaron o se cambiaron. Las entradas con la decisión, el motivo y el commit están en [`bitacora_ia.md`](bitacora_ia.md).
+
+## 8. Autor y licencia
+
+Autor: Juan José Rugeles Javela, estudiante de Ingeniería de Software. Proyecto del seminario de grado.
+
+Licencia: MIT, la del esqueleto de Laravel sobre el que se construyó (ver `composer.json`).
+
+---
+
+# Anexos de entregas anteriores
+
 ## Funcionalidad de la semana 5
 
 ### Historia de usuario
@@ -82,12 +110,13 @@ App\Agenda\Agenda::registrarCita(
 |---|---|
 | Recibe | Cédula del paciente, nombre del médico y fecha y hora de inicio de la cita. |
 | Devuelve | Un objeto `Cita` con `cedulaPaciente`, `medico`, `inicio` y `estado = "Programada"`. La cita queda guardada en la agenda. |
-| Lanza | `HorarioOcupadoException` con el mensaje «Ese horario ya está ocupado» si el médico ya tiene una cita a esa hora. `InvalidArgumentException` si la hora no está alineada a bloques de 30 minutos. |
+| Lanza | `HorarioOcupadoException` con el mensaje «Ese horario ya está ocupado» si el médico ya tiene una cita a esa hora. `InvalidArgumentException` si la hora no está alineada a bloques de 30 minutos, si la cédula no tiene de 6 a 10 dígitos (semana 6) o si el médico está vacío, pasa de 100 caracteres o tiene caracteres de control (semana 6). |
 | Funciones auxiliares | `estaOcupado(string $medico, DateTimeImmutable $inicio): bool` y `totalCitas(): int`. |
 
 **Supuestos**
 
 - Las citas duran 30 minutos y los bloques empiezan en :00 y :30 (la cliente dijo que las citas son de 30 minutos).
+- Desde la semana 6 la agenda valida la cédula (solo dígitos, de 6 a 10) y el nombre del médico (no vacío, máximo 100 caracteres, sin saltos de línea ni caracteres de control), para que no entren fragmentos de SQL o HTML cuando se conecte la base de datos.
 - La ocupación se calcula por médico: dos médicos distintos pueden tener cita a la misma hora.
 - Esta versión guarda las citas en memoria; la persistencia en PostgreSQL se conecta en una entrega posterior.
 - No se valida el horario laboral ni las fechas pasadas en esta versión.
