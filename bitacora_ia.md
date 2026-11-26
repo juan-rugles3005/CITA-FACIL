@@ -135,3 +135,47 @@ Pruebas descartadas en la revisión: 3 (mensaje de la excepción, hora no alinea
 ## Reflexión de la semana 7
 
 La IA me ahorró escribir las tablas y las pruebas, pero la revisión fue lo que importó: una de las pruebas tenía el texto de un mensaje que solo estaba en el código y habría pasado aunque la regla fuera otra. Con los errores a propósito vi que algunas pruebas no fallaban con los primeros cambios y que mi lista de errores era corta, no que las pruebas sobraran. La prueba que me quedó pendiente es la de mayúsculas en el nombre del médico, porque primero hay que preguntarle a la cliente cuál es la regla.
+
+---
+
+# Semana 6: revisión de código y seguridad
+
+Funcionalidad: revisión del incremento (linter, lista de seguridad, segunda revisión con IA), correcciones, README y docstrings
+Asistente usado: Claude (chat) para la revisión y para hacer las correcciones en una rama propia (`semana-6-revision`)
+
+## Entradas de la semana 6
+
+### Entrada 11
+
+- **Fecha:** 2026-11-25
+- **Prompt o sugerencia:** «Revisa app/Agenda, routes, database, config y .env.example con criterios de corrección, diseño y seguridad (inyección, secretos, contraseñas, control de acceso, dependencias). Dame una tabla de hallazgos con archivo, línea y severidad, y separa los problemas seguros de las sospechas.» Claude devolvió 4 problemas seguros (validación de entradas, `APP_DEBUG=true`, usuario de prueba con contraseña «password», línea larga con valor mágico) y 4 sospechas (`==` con fechas, carrera al guardar, estado libre en el constructor de `Cita`, dependencias).
+- **Decisión:** Aceptada con cambios
+- **Por qué:** Los 4 seguros eran reales. De las sospechas, dos eran falsos positivos (`==` compara el instante, y no hay carrera mientras las citas estén en memoria), una es real pero baja y queda pendiente (el estado en el constructor), y la de dependencias depende de `composer audit`.
+- **Verificación:** Comprobé cada hallazgo en el código del commit 42a6a83: probé `registrarCita` con texto de SQL y HTML (la aceptaba), leí las líneas indicadas y probé que `==` entre fechas de zonas horarias distintas compara el instante. Lo que la IA no vio (la prueba Feature falla sin `APP_KEY`, el trait de `User.php`) apareció al ejecutar las pruebas y el linter. La clasificación completa está en la sección 3 de `revision_seguridad.md`.
+- **Commit relacionado:** 62cbc1f «Informe de revision de codigo y seguridad (revision_seguridad.md)»
+
+### Entrada 12
+
+- **Fecha:** 2026-11-25
+- **Prompt o sugerencia:** Corregir H-01: validar la cédula (6 a 10 dígitos) y el médico (no vacío, máximo 100 caracteres, sin caracteres de control) en `registrarCita`, y escribir pruebas de abuso con inyección SQL, HTML, saltos de línea, vacío y texto largo, sin tocar las pruebas existentes.
+- **Decisión:** Aceptada
+- **Por qué:** La agenda aceptaba cualquier texto y, al conectar PostgreSQL y las vistas, eso abriría la puerta a inyección y a registros falsos. Las reglas elegidas no cambian los casos de las semanas 5 y 7: todas las cédulas y médicos de esas pruebas siguen siendo válidos (el médico con espacio al final y el de apóstrofo también).
+- **Verificación:** Corrí las 15 pruebas nuevas contra el código anterior: 14 fallan (la de 100 caracteres exactos pasa porque ya aceptaba ese caso), y con la corrección pasan todas. Las 56 pruebas anteriores pasan sin modificarlas (71 en total).
+- **Commit relacionado:** 3f1601d «Seguridad: valida cedula (6 a 10 digitos) y medico (no vacio, maximo 100, sin caracteres de control) en registrarCita»
+
+### Entrada 13
+
+- **Fecha:** 2026-11-25
+- **Prompt o sugerencia:** Instrucción delimitada al asistente trabajando como agente de código en la rama `semana-6-revision`: configurar PHP_CodeSniffer, PHPStan y Pint; corregir los avisos y los hallazgos H-01 a H-03; poner docstrings y reescribir el README; un commit por corrección, sin modificar ninguna prueba existente y sin tocar nada fuera del alcance.
+- **Decisión:** Aceptada con cambios
+- **Por qué:** El agente dejó Pint y PSR-12 en conflicto con la clase vacía `HorarioOcupadoException` (Pint la compactaba a una línea y PHPCS la rechazaba). Se resolvió desactivando la regla `single_line_empty_body` en `pint.json` y dejando la clase con sus llaves en líneas separadas. También se corrigió un commit que había quedado con un aviso de Pint pendiente.
+- **Verificación:** Antes de integrar la rama reviso el diff completo con `git diff main..semana-6-revision` y confirmo que ningún archivo de `tests/` existente cambió (solo se agregó `AgendaEntradasMaliciosasTest.php`). PHPCS, PHPStan nivel 8 y Pint salen sin avisos y las 71 pruebas pasan.
+- **Commit relacionado:** 577035a, bfaec93, 7cb696b, 3f1601d, b8b9c21, 3a88e40, d00b4ee (rama `semana-6-revision`)
+
+## Resumen de la semana 6
+
+| Decisión | Cantidad |
+|---|---|
+| Aceptadas | 1 |
+| Aceptadas con cambios | 2 |
+| Rechazadas | 0 |

@@ -40,7 +40,7 @@ Commit revisado: 42a6a83 (antes de las correcciones; las correcciones están en 
 
 **Severidad:** alta (permite acceder o cambiar datos sin permiso, o expone secretos), media (error probable o riesgo con condiciones), baja (estilo o mantenibilidad).
 
-Resultado final: 71 pruebas en verde (las 55 anteriores sin modificar y 16 nuevas), PHPCS, PHPStan nivel 8 y Pint sin avisos.
+Resultado final: 71 pruebas en verde (las 56 anteriores sin modificar y 15 nuevas), PHPCS, PHPStan nivel 8 y Pint sin avisos.
 
 ### Avisos del linter no corregidos
 
