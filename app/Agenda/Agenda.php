@@ -9,6 +9,9 @@ class Agenda
 {
     private const BLOQUE_MINUTOS = 30;
 
+    /** Segundos y microsegundos que debe tener una hora de inicio (formato 's.u'). */
+    private const SEGUNDOS_EXACTOS = '00.000000';
+
     /** @var list<Cita> */
     private array $citas = [];
 
@@ -31,8 +34,13 @@ class Agenda
 
     private function validarInicioEnBloque(DateTimeImmutable $inicio): void
     {
-        if ((int) $inicio->format('i') % self::BLOQUE_MINUTOS !== 0 || $inicio->format('s.u') !== '00.000000') {
-            throw new InvalidArgumentException(sprintf('La hora debe estar alineada a bloques de %d minutos', self::BLOQUE_MINUTOS));
+        $minutoAlineado = (int) $inicio->format('i') % self::BLOQUE_MINUTOS === 0;
+        $segundosExactos = $inicio->format('s.u') === self::SEGUNDOS_EXACTOS;
+
+        if (! $minutoAlineado || ! $segundosExactos) {
+            throw new InvalidArgumentException(
+                sprintf('La hora debe estar alineada a bloques de %d minutos', self::BLOQUE_MINUTOS)
+            );
         }
     }
 
