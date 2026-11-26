@@ -1,5 +1,7 @@
 # CitaFácil
 
+[![CI](https://github.com/juan-rugles3005/CITA-FACIL/actions/workflows/ci.yml/badge.svg)](https://github.com/juan-rugles3005/CITA-FACIL/actions/workflows/ci.yml)
+
 ## 1. Qué es
 
 CitaFácil es el sistema de gestión de citas de un consultorio médico. Evita que la secretaria asigne la misma hora a dos pacientes con el mismo médico. En esta versión está hecha la lógica de la agenda (HU-06 registrar una cita sin cruces y el cambio de estado de una cita); las citas se guardan en memoria y la persistencia en PostgreSQL llega en una entrega posterior. El proyecto está hecho con Laravel 12.

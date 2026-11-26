@@ -38,8 +38,11 @@ Commit revisado: 42a6a83 (antes de las correcciones; las correcciones están en 
 | H-08 | app/Agenda/Agenda.php y Cita.php | Las funciones principales no tenían docstring completo (qué recibe, devuelve y lanza) | Legibilidad | Baja | Docstrings en `registrarCita`, `estaOcupado`, `totalCitas`, constructor de `Cita` y las clases | 3a88e40 |
 | H-09 | README.md | Era el README por defecto de Laravel; no explicaba el proyecto ni cómo instalarlo | Documentación | Baja | README con las ocho secciones | d00b4ee |
 | H-10 | composer.json (dependencias de desarrollo) | La versión 3.13.2 de squizlabs/php_codesniffer que elegí al principio tiene un aviso de seguridad (PKSA-rdkp-vv9z-mjkg) y Composer se negó a instalarla | A06 Componentes vulnerables | Baja (es herramienta de desarrollo, no corre en producción) | Se instaló la versión 4.0.4, sin avisos, y composer audit sale limpio | Agrega phpstan y phpcs al lock y resultado de composer audit |
+| H-11 | composer.lock (symfony/http-kernel, symfony/mailer, symfony/routing) | `composer audit` en el pipeline encontró 5 avisos de seguridad (CVE-2026-133743, -133746, -133751, -133754 y -133755) en versiones de Symfony anteriores a la 7.4.24; mi `composer audit` local del día anterior no los mostraba | A06 Componentes vulnerables | Media (routing y http-kernel pueden generar URLs hacia otro host; mailer solo aplica si se envía correo, que CitaFácil todavía no hace) | `composer update "symfony/*" --with-dependencies`; `composer audit` limpio y pipeline en verde | 78f898c |
 
 **Severidad:** alta (permite acceder o cambiar datos sin permiso, o expone secretos), media (error probable o riesgo con condiciones), baja (estilo o mantenibilidad).
+
+Cobertura medida por el pipeline: la lógica de la agenda (`Agenda` y `Cita`) tiene 100 % de métodos y líneas cubiertos; todo `app/` tiene 90,24 % de líneas. Cobertura de líneas no significa que las pruebas sean buenas: por eso se hizo la prueba de romper el código a propósito (entrada 10 de la bitácora).
 
 Resultado final: 71 pruebas en verde (las 56 anteriores sin modificar y 15 nuevas), PHPCS, PHPStan nivel 8 y Pint sin avisos.
 
