@@ -179,3 +179,51 @@ Asistente usado: Claude (chat) para la revisión y para hacer las correcciones e
 | Aceptadas | 1 |
 | Aceptadas con cambios | 2 |
 | Rechazadas | 0 |
+
+---
+
+# Semanas 1 a 4 (documentos en PDF)
+
+Las bitácoras de prompts de esas semanas están dentro de sus documentos, en la carpeta [`docs/`](docs/README.md):
+
+| Semana | Dónde está el uso de IA |
+|---|---|
+| 1 | Sección «Uso de la IA en esta tarea» de [S1_Mapa_IA_ciclo_de_vida.pdf](docs/modulo-1-fundamentos/S1_Mapa_IA_ciclo_de_vida.pdf) |
+| 2 | Línea «Uso de IA» de [S2_Propuesta.pdf](docs/modulo-2-propuesta/S2_Propuesta.pdf) |
+| 3 | [S3_Bitacora_prompts.pdf](docs/modulo-3-requisitos/S3_Bitacora_prompts.pdf) (6 prompts) y sección 7 de [S3_Requisitos.pdf](docs/modulo-3-requisitos/S3_Requisitos.pdf) |
+| 4 | Sección 7 de [S4_Diseno_y_ADR-001.pdf](docs/modulo-4-diseno/S4_Diseno_y_ADR-001.pdf) |
+
+---
+
+# Semanas 9 y 10: pipeline, contenedor y entrega final
+
+Funcionalidad: pipeline de integración continua, Dockerfile y documentos de operación de CitaFácil
+Asistente usado: Claude (chat) para escribir el pipeline, el Dockerfile y los documentos de operación
+
+## Entradas de las semanas 9 y 10
+
+### Entrada 14
+
+- **Fecha:** 2026-11-26
+- **Prompt o sugerencia:** Le dije a Claude que no tenía el pipeline de la semana 9. Claude escribió `.github/workflows/ci.yml` (push y pull request a `main`, permisos de solo lectura, linter, `composer audit`, pruebas con cobertura y construcción de la imagen Docker), un `Dockerfile` en dos etapas con usuario sin privilegios, un `.dockerignore` y `dependabot.yml`.
+- **Decisión:** Aceptada con cambios
+- **Por qué:** La estructura cumple la lista de la semana (eventos, permisos, secretos, versiones, dependencias y que un fallo haga fallar el pipeline). Hadolint encontró 2 avisos en el Dockerfile (usuario no numérico y `HEALTHCHECK` sin formato JSON) y se corrigieron antes del commit. Además, `php artisan serve` es un servidor de desarrollo; lo dejé documentado como límite en `docs/plan_operacion.md` en vez de fingir que es de producción.
+- **Verificación:** actionlint sin avisos sobre `ci.yml` y hadolint sin avisos sobre el Dockerfile; en mi equipo pasan las 71 pruebas y `/up` responde 200. La ejecución real en GitHub: **[PEGAR AQUÍ el enlace a la ejecución en verde]**. Hice fallar una prueba a propósito y el pipeline salió en rojo: **[PEGAR AQUÍ el enlace a la ejecución en rojo, o borrar esta línea si no se hizo]**.
+- **Commit relacionado:** 7098383 «Pipeline de CI (GitHub Actions) y Dockerfile»
+
+### Entrada 15
+
+- **Fecha:** 2026-11-26
+- **Prompt o sugerencia:** Revisar con la lista de la semana 9 los archivos `ci.yml` y `Dockerfile` generados por IA del código de práctica (Tienda La Esquina), y escribir `docs/revision_configuracion.md`, la guía de despliegue y el plan de operación.
+- **Decisión:** Aceptada con cambios
+- **Por qué:** La revisión encontró 12 problemas (6 en el pipeline y 6 en el Dockerfile, contando el `.dockerignore` que faltaba) y una línea que parece un problema y no lo es (`--host 0.0.0.0`). Cambié el texto del documento para dejar claro que esos archivos son de práctica y no de CitaFácil. En el plan de operación quité cualquier monitoreo de modelos, porque CitaFácil no tiene ningún modelo de IA desplegado.
+- **Verificación:** Corrí actionlint (0 avisos: no vio ninguno de los 6 problemas del pipeline) y hadolint (2 avisos: solo vio `latest` y el `pip` sin `--no-cache-dir`). Los demás los encontré leyendo los archivos con la lista de la semana.
+- **Commit relacionado:** 6e2f5a7 «Documentos del modulo 6: revision de configuracion, guia de despliegue y plan de operacion»
+
+## Resumen de las semanas 9 y 10
+
+| Decisión | Cantidad |
+|---|---|
+| Aceptadas | 0 |
+| Aceptadas con cambios | 2 |
+| Rechazadas | 0 |
