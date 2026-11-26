@@ -7,8 +7,8 @@ Commit revisado: 42a6a83 (antes de las correcciones; las correcciones están en 
 
 ## 1. Herramientas y criterios
 
-- **Linter:** PHP_CodeSniffer 3.13.2 con PSR-12 y reglas de seguridad (`Generic.PHP.ForbiddenFunctions` para `eval`, `exec`, `system`, `shell_exec`, `unserialize`, `md5` y `sha1`, además de `Squiz.PHP.Eval`), PHPStan 2.1.17 nivel 8 y Laravel Pint. Configuración en `phpcs.xml`, `phpstan.neon` y `pint.json`; se corren con `composer lint`. (En PHP no existe `pyproject.toml` ni `ruff`; estos son los equivalentes.)
-- **Auditoría de dependencias:** `composer audit` (equivalente a pip-audit) — resultado: **[PEGAR AQUÍ la salida de `composer audit` ejecutada en tu computador]**.
+- **Linter:** PHP_CodeSniffer 4.0.4 con PSR-12 y reglas de seguridad (`Generic.PHP.ForbiddenFunctions` para `eval`, `exec`, `system`, `shell_exec`, `unserialize`, `md5` y `sha1`, además de `Squiz.PHP.Eval`), PHPStan 2.3.7 nivel 8 y Laravel Pint. Configuración en `phpcs.xml`, `phpstan.neon` y `pint.json`; se corren con `composer lint`. (En PHP no existe `pyproject.toml` ni `ruff`; estos son los equivalentes.)
+- **Auditoría de dependencias:** `composer audit` (equivalente a pip-audit) — resultado: sin vulnerabilidades conocidas («No security vulnerability advisories found», ejecutado el 2026-11-25).
 - **Lista de revisión:** la de la semana 6 (corrección y pruebas, diseño y legibilidad, seguridad).
 - **Revisión con IA:** Claude (chat) con el prompt de revisión de la semana (ver sección 3 y entrada 11 de la bitácora).
 
@@ -37,6 +37,7 @@ Commit revisado: 42a6a83 (antes de las correcciones; las correcciones están en 
 | H-07 | (todo el proyecto) | No había linter configurado | Proceso | Baja | `phpcs.xml`, `phpstan.neon`, `pint.json` y `composer lint` | 577035a |
 | H-08 | app/Agenda/Agenda.php y Cita.php | Las funciones principales no tenían docstring completo (qué recibe, devuelve y lanza) | Legibilidad | Baja | Docstrings en `registrarCita`, `estaOcupado`, `totalCitas`, constructor de `Cita` y las clases | 3a88e40 |
 | H-09 | README.md | Era el README por defecto de Laravel; no explicaba el proyecto ni cómo instalarlo | Documentación | Baja | README con las ocho secciones | d00b4ee |
+| H-10 | composer.json (dependencias de desarrollo) | La versión 3.13.2 de squizlabs/php_codesniffer que elegí al principio tiene un aviso de seguridad (PKSA-rdkp-vv9z-mjkg) y Composer se negó a instalarla | A06 Componentes vulnerables | Baja (es herramienta de desarrollo, no corre en producción) | Se instaló la versión 4.0.4, sin avisos, y composer audit sale limpio | Agrega phpstan y phpcs al lock y resultado de composer audit |
 
 **Severidad:** alta (permite acceder o cambiar datos sin permiso, o expone secretos), media (error probable o riesgo con condiciones), baja (estilo o mantenibilidad).
 
