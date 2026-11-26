@@ -19,9 +19,11 @@ cd CITA-FACIL
 composer install
 cp .env.example .env
 php artisan key:generate
+touch database/database.sqlite
+php artisan migrate
 ```
 
-El archivo `.env` es tuyo: no se sube a Git (está en `.gitignore`). Si algún día pones claves o contraseñas de base de datos, van solo ahí y nunca en `.env.example`.
+En Windows (PowerShell) usa `New-Item database/database.sqlite` en lugar de `touch`. El archivo `.env` es tuyo: no se sube a Git (está en `.gitignore`). Si algún día pones claves o contraseñas de base de datos, van solo ahí y nunca en `.env.example`.
 
 ## 4. Ejecución
 
