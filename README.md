@@ -50,6 +50,7 @@ $agenda->estaOcupado('Dra. Torres', new DateTimeImmutable('2026-10-28 09:00')); 
 Revisión de calidad y seguridad (PHP_CodeSniffer con PSR-12 y reglas de seguridad, PHPStan nivel 8 y Pint):
 
 ```bash
+composer require --dev phpstan/phpstan:2.1.17 squizlabs/php_codesniffer:3.13.2   # solo la primera vez
 composer lint
 composer audit
 ```
