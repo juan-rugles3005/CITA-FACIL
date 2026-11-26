@@ -9,7 +9,9 @@ use InvalidArgumentException;
 class Cita
 {
     public const PROGRAMADA = 'Programada';
+
     public const ATENDIDA = 'Atendida';
+
     public const CANCELADA = 'Cancelada';
 
     private const ESTADOS = [self::PROGRAMADA, self::ATENDIDA, self::CANCELADA];
@@ -31,7 +33,7 @@ class Cita
      */
     public function cambiarEstado(string $nuevoEstado): self
     {
-        if (!in_array($nuevoEstado, self::ESTADOS, true)) {
+        if (! in_array($nuevoEstado, self::ESTADOS, true)) {
             throw new InvalidArgumentException(sprintf('Estado desconocido: "%s"', $nuevoEstado));
         }
 
