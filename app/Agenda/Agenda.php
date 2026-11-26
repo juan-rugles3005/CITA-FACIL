@@ -5,6 +5,10 @@ namespace App\Agenda;
 use DateTimeImmutable;
 use InvalidArgumentException;
 
+/**
+ * Agenda de citas del consultorio. Guarda las citas en memoria (todavia sin base de datos)
+ * y no permite dos citas del mismo medico a la misma hora.
+ */
 class Agenda
 {
     private const BLOQUE_MINUTOS = 30;
@@ -20,6 +24,18 @@ class Agenda
     /** @var list<Cita> */
     private array $citas = [];
 
+    /**
+     * Registra una cita nueva con estado Programada si el medico esta libre a esa hora.
+     *
+     * @param  string  $cedulaPaciente  Cedula del paciente: solo digitos, de 6 a 10.
+     * @param  string  $medico  Nombre del medico: no vacio, hasta 100 caracteres, sin caracteres de control.
+     * @param  DateTimeImmutable  $inicio  Inicio de la cita: minuto 00 o 30, sin segundos ni fracciones.
+     * @return Cita La cita creada, que tambien queda guardada en la agenda.
+     *
+     * @throws InvalidArgumentException si la cedula o el medico no son validos, o la hora no esta alineada
+     *                                  a bloques de 30 minutos (en ese orden de validacion).
+     * @throws HorarioOcupadoException si el medico ya tiene una cita con ese mismo inicio.
+     */
     public function registrarCita(
         string $cedulaPaciente,
         string $medico,
@@ -75,6 +91,14 @@ class Agenda
         }
     }
 
+    /**
+     * Indica si el medico ya tiene una cita que empieza exactamente en esa fecha y hora.
+     * Compara solo el inicio exacto: con una hora intermedia (por ejemplo 9:15) devuelve false.
+     *
+     * @param  string  $medico  Nombre del medico, comparado de forma exacta (distingue mayusculas).
+     * @param  DateTimeImmutable  $inicio  Fecha y hora de inicio del bloque a consultar.
+     * @return bool true si hay una cita de ese medico a esa hora; false en cualquier otro caso.
+     */
     public function estaOcupado(string $medico, DateTimeImmutable $inicio): bool
     {
         foreach ($this->citas as $cita) {
@@ -86,6 +110,11 @@ class Agenda
         return false;
     }
 
+    /**
+     * Cuenta las citas guardadas en la agenda.
+     *
+     * @return int Numero de citas registradas (0 si la agenda esta vacia).
+     */
     public function totalCitas(): int
     {
         return count($this->citas);

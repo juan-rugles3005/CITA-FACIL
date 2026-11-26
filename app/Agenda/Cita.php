@@ -6,6 +6,9 @@ use DateTimeImmutable;
 use DomainException;
 use InvalidArgumentException;
 
+/**
+ * Cita medica inmutable: para cambiar el estado se crea otra con cambiarEstado().
+ */
 class Cita
 {
     public const PROGRAMADA = 'Programada';
@@ -16,6 +19,13 @@ class Cita
 
     private const ESTADOS = [self::PROGRAMADA, self::ATENDIDA, self::CANCELADA];
 
+    /**
+     * @param  string  $cedulaPaciente  Cedula del paciente.
+     * @param  string  $medico  Nombre del medico.
+     * @param  DateTimeImmutable  $inicio  Fecha y hora de inicio de la cita.
+     * @param  string  $estado  Programada (por defecto), Atendida o Cancelada. El constructor no lo valida;
+     *                          los cambios de estado pasan por cambiarEstado().
+     */
     public function __construct(
         public readonly string $cedulaPaciente,
         public readonly string $medico,
@@ -27,6 +37,9 @@ class Cita
     /**
      * Devuelve una cita nueva con el estado indicado; la original no cambia.
      * Solo una cita Programada puede pasar a Atendida o Cancelada.
+     *
+     * @param  string  $nuevoEstado  Estado destino: Programada, Atendida o Cancelada.
+     * @return self Cita nueva con los mismos datos y el estado nuevo.
      *
      * @throws InvalidArgumentException si el estado nuevo no existe
      * @throws DomainException si la transición no está permitida
