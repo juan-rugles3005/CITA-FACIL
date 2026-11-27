@@ -33,7 +33,16 @@ En Windows (PowerShell) usa `New-Item database/database.sqlite` en lugar de `tou
 php artisan serve
 ```
 
-Abre http://127.0.0.1:8000 para ver la página de inicio. La agenda todavía no tiene pantallas; se puede probar desde la consola:
+Abre http://127.0.0.1:8000: es una pantalla de demostración de la agenda. Permite registrar una cita (cédula, médico, fecha y hora en bloques de 30 minutos), muestra el error «Ese horario ya está ocupado» si el médico ya tiene una cita a esa hora, y deja marcar una cita como atendida o cancelarla (una cita cancelada libera la hora). Usa las clases `Agenda` y `Cita` sin cambiarlas. Limitaciones: las citas se guardan en la sesión del navegador, no hay inicio de sesión ni base de datos PostgreSQL, y el botón «Vaciar la agenda» borra las citas de la demostración.
+
+Con Docker (la sesión se guarda en archivos, sin base de datos):
+
+```bash
+docker build -t citafacil .
+docker run --rm -p 8000:8000 -e APP_KEY="$(php artisan key:generate --show)" -e SESSION_DRIVER=file -e CACHE_STORE=file citafacil
+```
+
+La agenda también se puede probar desde la consola:
 
 ```bash
 php artisan tinker

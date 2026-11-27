@@ -227,3 +227,21 @@ Asistente usado: Claude (chat) para escribir el pipeline, el Dockerfile y los do
 | Aceptadas | 0 |
 | Aceptadas con cambios | 2 |
 | Rechazadas | 0 |
+
+---
+
+# Semana 10: pantalla de demostración
+
+Funcionalidad: pantalla web mínima para ver funcionando la agenda (registrar cita, horario ocupado, cambiar estado)
+Asistente usado: Claude (chat), escribió el controlador, la vista y las pruebas en la rama `semana-10-pantalla`
+
+## Entradas de la semana 10 (pantalla)
+
+### Entrada 16
+
+- **Fecha:** 2026-11-27
+- **Prompt o sugerencia:** Le dije a Claude que el profesor quiere ver el programa funcionando. Claude propuso una pantalla mínima que usa `Agenda` y `Cita` sin cambiarlas: `AgendaController`, la vista `agenda.blade.php`, cuatro rutas y 9 pruebas de la pantalla. Las citas se guardan en la sesión porque todavía no hay base de datos.
+- **Decisión:** Aceptada con cambios
+- **Por qué:** Es lo mínimo para mostrar la lógica ya probada sin inventar funcionalidades que no existen (no hay login ni PostgreSQL, y la pantalla lo dice). Durante la revisión el linter rechazó el primer código: PHPCS y Pint chocaban en la concatenación con `.`, en el `catch` múltiple y en `new Agenda`, y se resolvió con `sprintf`, dos bloques `catch` y una regla en `pint.json`. Una prueba mía también estaba mal: comprobaba que no apareciera la cédula rechazada, pero el formulario la vuelve a mostrar.
+- **Verificación:** Pasan las 80 pruebas (las 71 anteriores sin modificar y 9 nuevas), PHPCS, PHPStan nivel 8 y Pint sin avisos. Probé el flujo con `php artisan serve`: registrar una cita, intentar otra a la misma hora (sale «Ese horario ya está ocupado») y `/up` responde 200. Lo que debo revisar yo antes de mostrarlo: que se vea bien en mi navegador.
+- **Commit relacionado:** rama `semana-10-pantalla` (pendiente de integrar a `main`)
